@@ -1,0 +1,13 @@
+// lib/presentation/screens/home/views/reports_view.dart
+import 'package:flutter/material.dart';
+
+class ReportsView extends StatelessWidget {
+  const ReportsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Vista de Reportes', style: TextStyle(fontSize: 24)),
+    );
+  }
+}
