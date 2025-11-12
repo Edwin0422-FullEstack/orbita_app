@@ -14,23 +14,23 @@ dependencies:
     sdk: flutter
 
   # --- Core (Gestión de Estado y Navegación) ---
-  flutter_riverpod: ^2.5.1
-  riverpod_annotation: ^2.3.5
-  go_router: ^14.2.0
+  flutter_riverpod: ^3.0.3
+  riverpod_annotation: ^3.0.3
+  go_router: ^17.0.0
 
   # --- Data (Networking y Almacenamiento) ---
   dio: ^5.5.0+1
   flutter_secure_storage: ^9.2.2
 
   # --- Biometría (Huella dactilar) ---
-  local_auth: ^2.2.0
+  local_auth: ^3.0.0
 
   # --- Modelos de Datos (Inmutabilidad y JSON) ---
-  freezed_annotation: ^2.4.4
+  freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
 
   image_picker: ^1.1.2   # Para acceder a la cámara y galería
-  geolocator: ^12.0.0    # Para obtener la ubicación GPS
+  geolocator: ^14.0.2    # Para obtener la ubicación GPS
 
   # --- UI (íconos, etc) ---
   cupertino_icons: ^1.0.8
@@ -42,13 +42,13 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
   # --- Generadores de código (Freezed, Riverpod, JSON) ---
   build_runner: ^2.4.11
-  freezed: ^2.5.3
-  json_serializable: ^6.8.0
-  riverpod_generator: ^2.4.2
+  freezed: ^3.2.3
+  json_serializable: ^6.11.1
+  riverpod_generator: ^3.0.3
 
 # ===============================================
 # CONFIGURACIÓN DE FLUTTER

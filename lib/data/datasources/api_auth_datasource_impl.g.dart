@@ -6,22 +6,46 @@ part of 'api_auth_datasource_impl.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$apiAuthDatasourceHash() => r'ad4d5048b061162114da6b4cf9ea044d737e239b';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [apiAuthDatasource].
 @ProviderFor(apiAuthDatasource)
-final apiAuthDatasourceProvider = AutoDisposeProvider<AuthDatasource>.internal(
-  apiAuthDatasource,
-  name: r'apiAuthDatasourceProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$apiAuthDatasourceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const apiAuthDatasourceProvider = ApiAuthDatasourceProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ApiAuthDatasourceRef = AutoDisposeProviderRef<AuthDatasource>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class ApiAuthDatasourceProvider
+    extends $FunctionalProvider<AuthDatasource, AuthDatasource, AuthDatasource>
+    with $Provider<AuthDatasource> {
+  const ApiAuthDatasourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'apiAuthDatasourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$apiAuthDatasourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<AuthDatasource> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  AuthDatasource create(Ref ref) {
+    return apiAuthDatasource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AuthDatasource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AuthDatasource>(value),
+    );
+  }
+}
+
+String _$apiAuthDatasourceHash() => r'ad4d5048b061162114da6b4cf9ea044d737e239b';

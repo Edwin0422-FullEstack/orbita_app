@@ -6,22 +6,43 @@ part of 'splash_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$splashControllerHash() => r'ab6b7b3cdc722e7d0c06fa7e4776622987bf4be5';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [splashController].
 @ProviderFor(splashController)
-final splashControllerProvider = AutoDisposeFutureProvider<AuthStatus>.internal(
-  splashController,
-  name: r'splashControllerProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$splashControllerHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const splashControllerProvider = SplashControllerProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SplashControllerRef = AutoDisposeFutureProviderRef<AuthStatus>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class SplashControllerProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<AuthStatus>,
+          AuthStatus,
+          FutureOr<AuthStatus>
+        >
+    with $FutureModifier<AuthStatus>, $FutureProvider<AuthStatus> {
+  const SplashControllerProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'splashControllerProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$splashControllerHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<AuthStatus> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<AuthStatus> create(Ref ref) {
+    return splashController(ref);
+  }
+}
+
+String _$splashControllerHash() => r'ab6b7b3cdc722e7d0c06fa7e4776622987bf4be5';

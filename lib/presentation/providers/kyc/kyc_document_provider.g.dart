@@ -6,38 +6,99 @@ part of 'kyc_document_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$imagePickerHash() => r'4ade97b98e4e2b1423bb08eb64f280b92f8ac945';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [imagePicker].
-@ProviderFor(imagePicker)
-final imagePickerProvider = AutoDisposeProvider<ImagePicker>.internal(
-  imagePicker,
-  name: r'imagePickerProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$imagePickerHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(KycDocuments)
+const kycDocumentsProvider = KycDocumentsProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ImagePickerRef = AutoDisposeProviderRef<ImagePicker>;
+final class KycDocumentsProvider
+    extends $NotifierProvider<KycDocuments, KycImagesState> {
+  const KycDocumentsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'kycDocumentsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$kycDocumentsHash();
+
+  @$internal
+  @override
+  KycDocuments create() => KycDocuments();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(KycImagesState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<KycImagesState>(value),
+    );
+  }
+}
+
 String _$kycDocumentsHash() => r'4c31a31172e2396e15526ee844bb0da63c7a866a';
 
-/// See also [KycDocuments].
-@ProviderFor(KycDocuments)
-final kycDocumentsProvider =
-    AutoDisposeNotifierProvider<KycDocuments, KycImagesState>.internal(
-      KycDocuments.new,
-      name: r'kycDocumentsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$kycDocumentsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+abstract class _$KycDocuments extends $Notifier<KycImagesState> {
+  KycImagesState build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<KycImagesState, KycImagesState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<KycImagesState, KycImagesState>,
+              KycImagesState,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$KycDocuments = AutoDisposeNotifier<KycImagesState>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+@ProviderFor(imagePicker)
+const imagePickerProvider = ImagePickerProvider._();
+
+final class ImagePickerProvider
+    extends $FunctionalProvider<ImagePicker, ImagePicker, ImagePicker>
+    with $Provider<ImagePicker> {
+  const ImagePickerProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'imagePickerProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$imagePickerHash();
+
+  @$internal
+  @override
+  $ProviderElement<ImagePicker> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  ImagePicker create(Ref ref) {
+    return imagePicker(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ImagePicker value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ImagePicker>(value),
+    );
+  }
+}
+
+String _$imagePickerHash() => r'4ade97b98e4e2b1423bb08eb64f280b92f8ac945';
