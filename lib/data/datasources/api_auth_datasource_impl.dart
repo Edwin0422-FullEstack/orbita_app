@@ -13,7 +13,7 @@ part 'api_auth_datasource_impl.g.dart'; // Corre el build_runner después
 // --- ¡LA MAGIA DE RIVERPOD! ---
 // 1. Creamos un provider que construye nuestra clase...
 @riverpod
-AuthDatasource apiAuthDatasource(ApiAuthDatasourceRef ref) {
+AuthDatasource apiAuthDatasource(Ref ref) {
   return ApiAuthDatasourceImpl(
     ref.watch(dioProvider),           // 2. Le inyectamos Dio
     ref.watch(secureStorageProvider), // 3. Le inyectamos el Storage
@@ -50,7 +50,7 @@ class ApiAuthDatasourceImpl implements AuthDatasource {
       // 2. Devolvemos el DTO del usuario
       return user;
 
-    } on DioException catch (e) {
+    } on DioException {
       // (Aquí deberíamos mapear errores, ej. 401 a "InvalidCredentials")
       rethrow;
     }

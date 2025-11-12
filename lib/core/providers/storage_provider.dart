@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'storage_provider.g.dart'; // Corre el build_runner después
 
 @riverpod
-FlutterSecureStorage secureStorage(SecureStorageRef ref) {
+FlutterSecureStorage secureStorage(Ref ref) {
   // Simplemente retornamos la instancia
   return const FlutterSecureStorage();
 }

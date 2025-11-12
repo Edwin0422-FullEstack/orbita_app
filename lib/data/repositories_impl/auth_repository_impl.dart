@@ -1,6 +1,5 @@
 // lib/data/repositories_impl/auth_repository_impl.dart
 import 'package:orbita/data/datasources/auth_datasource.dart';
-import 'package:orbita/data/models/user_model.dart'; // Importamos para el mapper .toEntity()
 import 'package:orbita/domain/entities/user.dart';
 import 'package:orbita/domain/enums/auth_status.dart';
 import 'package:orbita/domain/repositories/auth_repository.dart';

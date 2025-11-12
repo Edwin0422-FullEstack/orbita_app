@@ -54,4 +54,4 @@ final class LocalAuthProvider
   }
 }
 
-String _$localAuthHash() => r'bbf192b2ad1b9c7d1ddfe510e02bae2bb4b66ff8';
+String _$localAuthHash() => r'd03f308b669c511807293a154ac98ce03f37f1c2';

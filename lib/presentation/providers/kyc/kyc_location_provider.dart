@@ -53,7 +53,9 @@ class KycLocation extends _$KycLocation {
 
     // 3. Obtiene la ubicación (con precisión alta - fintech)
     return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        )
     );
   }
 }

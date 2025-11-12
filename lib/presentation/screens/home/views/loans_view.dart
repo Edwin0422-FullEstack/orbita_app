@@ -11,7 +11,6 @@ class LoansView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionUser = ref.watch(sessionProvider);
     final isVerified = sessionUser?.isVerified ?? false;
-    final colorScheme = Theme.of(context).colorScheme;
 
     // Usamos un AnimatedSwitcher para una transición suave
     return AnimatedSwitcher(

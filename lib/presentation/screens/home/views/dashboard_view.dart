@@ -1,7 +1,6 @@
 // lib/presentation/screens/home/views/dashboard_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:orbita/domain/entities/user.dart';
 import 'package:orbita/presentation/providers/session/session_provider.dart';
 
 class DashboardView extends ConsumerWidget {
@@ -29,11 +28,11 @@ class DashboardView extends ConsumerWidget {
         else
         // Mostramos el estado de la cuenta
           Text(
-            sessionUser?.isVerified ?? false
+            sessionUser.isVerified
                 ? 'Cuenta Verificada'
                 : 'VERIFICACIÓN REQUERIDA',
             style: TextStyle(
-                color: (sessionUser?.isVerified ?? false)
+                color: sessionUser.isVerified
                     ? Colors.green
                     : Colors.orange,
                 fontWeight: FontWeight.bold

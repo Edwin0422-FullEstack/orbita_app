@@ -51,6 +51,6 @@ class KycDocuments extends _$KycDocuments {
 
 // El provider de ImagePicker (sin cambios)
 @riverpod
-ImagePicker imagePicker(ImagePickerRef ref) {
+ImagePicker imagePicker(Ref ref) {
   return ImagePicker();
 }

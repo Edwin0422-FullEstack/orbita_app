@@ -65,7 +65,7 @@ class KycSelfieScreen extends ConsumerWidget {
               aspectRatio: 1.0, // Cuadrado para el círculo
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: colorScheme.outline.withOpacity(0.5)),
+                  border: Border.all(color: colorScheme.outline.withValues(alpha: 0.5)),
                   shape: BoxShape.circle, // <-- ¡LA CLAVE!
                 ),
                 child: ClipOval( // <-- ¡LA CLAVE!

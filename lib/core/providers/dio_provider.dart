@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'dio_provider.g.dart'; // Corre el build_runner después
 
 @riverpod
-Dio dio(DioRef ref) {
+Dio dio(Ref ref) {
   final options = BaseOptions(
     // ⚠️ ¡IMPORTANTE! Esta es tu URL base de la API.
     // En un proyecto real, esto vendría de variables de entorno (flutter_dotenv)

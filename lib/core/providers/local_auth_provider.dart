@@ -5,6 +5,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'local_auth_provider.g.dart'; // Corre el build_runner después
 
 @riverpod
-LocalAuthentication localAuth(LocalAuthRef ref) {
+LocalAuthentication localAuth(Ref ref) {
   return LocalAuthentication();
 }

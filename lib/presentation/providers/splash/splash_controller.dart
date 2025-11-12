@@ -2,7 +2,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:orbita/domain/enums/auth_status.dart';
 import 'package:orbita/core/providers/repository_providers.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 part 'splash_controller.g.dart';
 

@@ -12,17 +12,17 @@ part 'repository_providers.g.dart';
 // --- ¡EL INTERRUPTOR MAESTRO! ---
 // ------------------------------------
 // (En un proyecto 2026, esto vendría de variables de entorno)
-const bool _USE_MOCK_DATA = true;
+const bool _useMockData = true;
 // ------------------------------------
 
 
 @riverpod
-AuthRepository authRepository(AuthRepositoryRef ref) {
+AuthRepository authRepository(Ref ref) {
 
   final AuthDatasource datasource;
 
   // 3. Decidimos qué implementación inyectar
-  if (_USE_MOCK_DATA) {
+if (_useMockData) {
     datasource = ref.watch(mockAuthDatasourceProvider); // <-- Inyecta el MOCK
   } else {
     datasource = ref.watch(apiAuthDatasourceProvider); // <-- Inyecta el REAL

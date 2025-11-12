@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:orbita/domain/entities/user.dart';
 import 'package:orbita/presentation/providers/session/session_provider.dart';
 // Importamos TODAS las pantallas y vistas
 import 'package:orbita/presentation/screens/home/home_screen.dart';

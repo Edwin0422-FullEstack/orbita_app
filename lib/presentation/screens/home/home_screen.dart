@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:orbita/presentation/providers/home/home_controller.dart';
 // 1. IMPORTAMOS NUESTRO ROUTER (para la clave global)
@@ -114,9 +115,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
-        color: colorScheme.surfaceVariant.withOpacity(0.8),
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.8),
         clipBehavior: Clip.antiAlias,
-        child: Container(
+        child: SizedBox(
           height: 60.0,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -169,7 +170,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               onTap: _toggleFabMenu,
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-                child: Container(color: Colors.black.withOpacity(0.3)),
+                child: Container(color: Colors.black.withValues(alpha: 0.3)),
               ),
             ),
 
@@ -290,7 +291,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(

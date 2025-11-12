@@ -1,13 +1,13 @@
 // lib/presentation/screens/login/login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:orbita/core/providers/local_auth_provider.dart'; // <-- 1. Biometría
 import 'package:orbita/presentation/providers/login/login_controller.dart';
-import 'package:local_auth/local_auth.dart';
 
 // --- Provider de estado local (visibilidad de contraseña) ---
-final _passwordVisibleProvider = StateProvider.autoDispose<bool>((_) => false);
+final _passwordVisibleProvider = StateProvider.autoDispose<bool>((ref) => false);
 
 // --- 2. Añadimos 'SingleTickerProviderStateMixin' para animación ---
 class LoginScreen extends ConsumerStatefulWidget {
@@ -76,10 +76,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
     try {
       final didAuthenticate = await localAuth.authenticate(
-        localizedReason: 'Por favor, autentícate para iniciar sesión en Orbita',
-        options: const AuthenticationOptions(
-          biometricOnly: true, // Solo huella/cara, no PIN
-        ),
+        localizedReason: 'Por favor, autentu00edcate para iniciar sesiu00f3n en Orbita',
       );
 
       if (didAuthenticate) {
@@ -132,7 +129,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     // --- 5. Borde Redondeado Personalizado ---
     final roundedBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(30.0), // <-- 5.
-      borderSide: BorderSide(color: colorScheme.outline.withOpacity(0.5)),
+      borderSide: BorderSide(color: colorScheme.outline.withValues(alpha: 0.5)),
     );
     final enabledBorder = roundedBorder.copyWith(
         borderSide: BorderSide(color: colorScheme.primary, width: 1.5)
@@ -274,7 +271,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           icon: Icon(
                             Icons.fingerprint,
                             size: 48,
-                            color: colorScheme.onSurfaceVariant.withOpacity(0.5),
+                            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                           ),
                         ),
                       ],

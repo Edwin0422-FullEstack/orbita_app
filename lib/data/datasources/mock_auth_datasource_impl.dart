@@ -10,7 +10,7 @@ part 'mock_auth_datasource_impl.g.dart'; // Corre el build_runner después
 
 // 1. Creamos un provider para este mock
 @riverpod
-AuthDatasource mockAuthDatasource(MockAuthDatasourceRef ref) {
+AuthDatasource mockAuthDatasource(Ref ref) {
   // Nota: Sigue usando el secureStorage real, pero para una clave 'mock'.
   return MockAuthDatasourceImpl(ref.watch(secureStorageProvider));
 }

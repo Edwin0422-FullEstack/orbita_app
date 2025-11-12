@@ -49,4 +49,4 @@ final class MockAuthDatasourceProvider
 }
 
 String _$mockAuthDatasourceHash() =>
-    r'9aa064f569d9bcf3da990bf99a3f7544701b96d2';
+    r'e3b3c8a8fbf13d5bbb2bfaf434e20a6571571190';

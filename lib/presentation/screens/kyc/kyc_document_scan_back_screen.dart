@@ -57,7 +57,7 @@ class KycDocumentScanBackScreen extends ConsumerWidget {
               aspectRatio: 16 / 10,
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: colorScheme.outline.withOpacity(0.5)),
+                  border: Border.all(color: colorScheme.outline.withValues(alpha: 0.5)),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: ClipRRect(

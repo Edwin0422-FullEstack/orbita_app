@@ -48,4 +48,4 @@ final class ApiAuthDatasourceProvider
   }
 }
 
-String _$apiAuthDatasourceHash() => r'ad4d5048b061162114da6b4cf9ea044d737e239b';
+String _$apiAuthDatasourceHash() => r'9a77d644cb206f33b77d9ed32ff7a7040ea104b9';

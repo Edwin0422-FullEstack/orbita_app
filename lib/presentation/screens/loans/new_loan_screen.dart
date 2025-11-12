@@ -1,6 +1,7 @@
 // lib/presentation/screens/loans/new_loan_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 // Provider para el paso actual del Stepper
 final _stepperIndexProvider = StateProvider.autoDispose<int>((_) => 0);
