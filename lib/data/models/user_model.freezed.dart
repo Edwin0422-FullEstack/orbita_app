@@ -27,7 +27,8 @@ mixin _$UserModel {
   @JsonKey(name: 'full_name')
   String get fullName => throw _privateConstructorUsedError;
   @JsonKey(name: 'access_token')
-  String? get token => throw _privateConstructorUsedError;
+  String? get token => throw _privateConstructorUsedError; // ¡AÑADIDO!
+  bool get isVerified => throw _privateConstructorUsedError;
 
   /// Serializes this UserModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -49,6 +50,7 @@ abstract class $UserModelCopyWith<$Res> {
     String email,
     @JsonKey(name: 'full_name') String fullName,
     @JsonKey(name: 'access_token') String? token,
+    bool isVerified,
   });
 }
 
@@ -71,6 +73,7 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? email = null,
     Object? fullName = null,
     Object? token = freezed,
+    Object? isVerified = null,
   }) {
     return _then(
       _value.copyWith(
@@ -90,6 +93,10 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
                 ? _value.token
                 : token // ignore: cast_nullable_to_non_nullable
                       as String?,
+            isVerified: null == isVerified
+                ? _value.isVerified
+                : isVerified // ignore: cast_nullable_to_non_nullable
+                      as bool,
           )
           as $Val,
     );
@@ -110,6 +117,7 @@ abstract class _$$UserModelImplCopyWith<$Res>
     String email,
     @JsonKey(name: 'full_name') String fullName,
     @JsonKey(name: 'access_token') String? token,
+    bool isVerified,
   });
 }
 
@@ -131,6 +139,7 @@ class __$$UserModelImplCopyWithImpl<$Res>
     Object? email = null,
     Object? fullName = null,
     Object? token = freezed,
+    Object? isVerified = null,
   }) {
     return _then(
       _$UserModelImpl(
@@ -150,6 +159,10 @@ class __$$UserModelImplCopyWithImpl<$Res>
             ? _value.token
             : token // ignore: cast_nullable_to_non_nullable
                   as String?,
+        isVerified: null == isVerified
+            ? _value.isVerified
+            : isVerified // ignore: cast_nullable_to_non_nullable
+                  as bool,
       ),
     );
   }
@@ -163,6 +176,7 @@ class _$UserModelImpl implements _UserModel {
     required this.email,
     @JsonKey(name: 'full_name') required this.fullName,
     @JsonKey(name: 'access_token') this.token,
+    required this.isVerified,
   });
 
   factory _$UserModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -179,10 +193,13 @@ class _$UserModelImpl implements _UserModel {
   @override
   @JsonKey(name: 'access_token')
   final String? token;
+  // ¡AÑADIDO!
+  @override
+  final bool isVerified;
 
   @override
   String toString() {
-    return 'UserModel(id: $id, email: $email, fullName: $fullName, token: $token)';
+    return 'UserModel(id: $id, email: $email, fullName: $fullName, token: $token, isVerified: $isVerified)';
   }
 
   @override
@@ -194,12 +211,15 @@ class _$UserModelImpl implements _UserModel {
             (identical(other.email, email) || other.email == email) &&
             (identical(other.fullName, fullName) ||
                 other.fullName == fullName) &&
-            (identical(other.token, token) || other.token == token));
+            (identical(other.token, token) || other.token == token) &&
+            (identical(other.isVerified, isVerified) ||
+                other.isVerified == isVerified));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, email, fullName, token);
+  int get hashCode =>
+      Object.hash(runtimeType, id, email, fullName, token, isVerified);
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -221,6 +241,7 @@ abstract class _UserModel implements UserModel {
     required final String email,
     @JsonKey(name: 'full_name') required final String fullName,
     @JsonKey(name: 'access_token') final String? token,
+    required final bool isVerified,
   }) = _$UserModelImpl;
 
   factory _UserModel.fromJson(Map<String, dynamic> json) =
@@ -236,7 +257,9 @@ abstract class _UserModel implements UserModel {
   String get fullName;
   @override
   @JsonKey(name: 'access_token')
-  String? get token;
+  String? get token; // ¡AÑADIDO!
+  @override
+  bool get isVerified;
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.

@@ -20,7 +20,7 @@ class SplashScreen extends ConsumerWidget {
         // --- CASO 1: ÉXITO ---
         data: (status) {
           if (status == AuthStatus.authenticated) {
-            context.replace('/home');
+            context.replace('/dashboard');
           } else {
             context.replace('/login');
           }

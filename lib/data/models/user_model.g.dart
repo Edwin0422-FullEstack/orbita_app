@@ -12,6 +12,7 @@ _$UserModelImpl _$$UserModelImplFromJson(Map<String, dynamic> json) =>
       email: json['email'] as String,
       fullName: json['full_name'] as String,
       token: json['access_token'] as String?,
+      isVerified: json['isVerified'] as bool,
     );
 
 Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>
@@ -20,4 +21,5 @@ Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>
       'email': instance.email,
       'full_name': instance.fullName,
       'access_token': instance.token,
+      'isVerified': instance.isVerified,
     };

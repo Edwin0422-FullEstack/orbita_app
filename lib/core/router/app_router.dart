@@ -19,16 +19,16 @@ import 'package:orbita/presentation/screens/login/login_screen.dart';
 import 'package:orbita/presentation/screens/splash/splash_screen.dart';
 import 'package:orbita/presentation/screens/loans/new_loan_screen.dart';
 
-// --- 1. Claves de Navegación ---
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
-// ¡YA NO NECESITAMOS LA KEY DEL SHELL AQUÍ, FUE UN ERROR MÍO!
-// final _shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'ShellNavigator');
+// --- 1. ¡LA CORRECCIÓN! ---
+// Quitamos el guion bajo '_' para hacerla PÚBLICA.
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+// -------------------------
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   final session = ref.watch(sessionProvider);
 
   return GoRouter(
-    navigatorKey: _rootNavigatorKey, // Clave raíz
+    navigatorKey: rootNavigatorKey, // <-- 2. Usamos la clave pública
     initialLocation: '/splash',
 
     routes: [
@@ -41,14 +41,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const LoginScreen(),
       ),
 
-      // --- 2. EL SHELLROUTE (SIN LA LLAVE INCORRECTA) ---
+      // --- EL SHELLROUTE ---
       StatefulShellRoute.indexedStack(
-        // ¡LA LÍNEA ERRÓNEA HA SIDO REMOVIDA!
-
         builder: (context, state, navigationShell) {
           return HomeScreen(navigationShell: navigationShell);
         },
-
         branches: [
           // Pestaña 0: Inicio
           StatefulShellBranch(
@@ -89,13 +86,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ],
       ),
 
-      // --- 3. RUTA DE NIVEL SUPERIOR (La solución al Bug 2) ---
+      // --- RUTA DE NIVEL SUPERIOR ---
       GoRoute(
         path: '/loans/new',
         builder: (context, state) => const NewLoanScreen(),
       ),
 
-      // --- GRUPO DE RUTAS KYC (Se mantiene igual) ---
+      // --- GRUPO DE RUTAS KYC ---
       GoRoute(
         path: '/kyc/start',
         builder: (context, state) => const KycStartScreen(),
@@ -118,7 +115,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
     ],
 
-    // 4. FIREWALL (Lógica sin cambios, ahora SÍ funciona)
+    // --- FIREWALL ---
     redirect: (context, state) {
       final goingTo = state.matchedLocation;
       final bool isLoggedIn = session != null;

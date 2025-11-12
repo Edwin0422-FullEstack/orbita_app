@@ -40,6 +40,7 @@ class MockAuthDatasourceImpl implements AuthDatasource {
         email: 'eduin.abello7@gmail.com',
         fullName: 'Edwin Abello (Mock)',
         token: 'mock-fake-token-12345',
+        isVerified: false,
       );
     } else {
       // Si falla, lanzamos un error como si fuera la API

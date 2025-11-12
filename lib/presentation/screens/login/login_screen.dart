@@ -117,7 +117,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     // --- El 'listener' se mantiene igual, es perfecto ---
     ref.listen(loginControllerProvider, (previous, next) {
       if (next is AsyncData<void> && !(next.isLoading)) {
-        context.go('/home');
+        context.go('/dashboard');
       }
       if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -5,16 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:orbita/presentation/providers/home/home_controller.dart';
-// ¡YA NO NECESITAMOS IMPORTAR LAS VISTAS AQUÍ!
-// ¡YA NO NECESITAMOS EL SESSION_PROVIDER AQUÍ!
+// 1. IMPORTAMOS NUESTRO ROUTER (para la clave global)
+import 'package:orbita/core/router/app_router.dart';
 
 // Provider de estado del menú (sin cambios)
 final _isFabMenuOpenProvider = StateProvider.autoDispose<bool>((_) => false);
-// ¡ELIMINADO! Ya no necesitamos _currentPageIndexProvider
 
 class HomeScreen extends ConsumerStatefulWidget {
-  // 1. ¡EL GRAN CAMBIO!
-  //    Acepta el 'Shell' que GoRouter nos provee.
   final StatefulNavigationShell navigationShell;
 
   const HomeScreen({
@@ -28,9 +25,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with SingleTickerProviderStateMixin {
-
-  // ... (Toda la lógica de initState, dispose, _toggleFabMenu,
-  //      y las animaciones se mantiene 100% IGUAL)
 
   late AnimationController _animationController;
   late Animation<double> _rotationAnimation;
@@ -81,7 +75,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Lógica de Logout (sin cambios)
+    // Lógica de Logout
     final homeState = ref.watch(homeControllerProvider);
     final isLoading = homeState.isLoading;
     ref.listen(homeControllerProvider, (previous, next) {
@@ -92,15 +86,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       if (next is AsyncError) { /* ... (manejo de error) */ }
     });
 
-    // --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
-    // Añadimos el guion bajo que faltaba
     final isFabMenuOpen = ref.watch(_isFabMenuOpenProvider);
-    // ----------------------------------
-
     final colorScheme = Theme.of(context).colorScheme;
-
-    // 2. ¡EL GRAN CAMBIO!
-    //    El índice actual ahora viene del 'Shell'
     final currentPageIndex = widget.navigationShell.currentIndex;
 
     return Scaffold(
@@ -134,8 +121,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // 3. ¡EL GRAN CAMBIO!
-              //    El onPressed ahora llama a 'goBranch'
               _buildNavButton(
                 context: context,
                 icon: Icons.dashboard,
@@ -175,13 +160,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       ),
       body: Stack(
         children: [
-          // --- CAPA 1: Contenido Principal (AHORA LIMPIO) ---
-          // 4. ¡EL GRAN CAMBIO!
-          //    El 'body' es simplemente el 'navigationShell'
-          //    GoRouter se encarga de poner la vista correcta aquí.
+          // El 'body' es simplemente el 'navigationShell'
           widget.navigationShell,
 
-          // --- CAPA 2: Desenfoque (sin cambios) ---
+          // CAPA 2: Desenfoque
           if (isFabMenuOpen)
             GestureDetector(
               onTap: _toggleFabMenu,
@@ -191,7 +173,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
             ),
 
-          // --- CAPA 3: Órbita (sin cambios) ---
+          // CAPA 3: Órbita
           Positioned(
             left: 0,
             right: 0,
@@ -199,7 +181,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             child: AnimatedBuilder(
               animation: _animationController,
               builder: (context, child) {
-                // ... (toda la lógica de la órbita se mantiene igual) ...
                 return Stack(
                   alignment: Alignment.bottomCenter,
                   children: [
@@ -208,14 +189,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       angle: math.pi * 5 / 6,
                       icon: Icons.post_add,
                       label: 'Nuevo Préstamo',
-                      // --- ¡AQUÍ ESTÁ EL CAMBIO! ---
+                      // --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
                       onPressed: () {
-                        // 1. Cierra el menú
                         _toggleFabMenu();
-                        // 2. Navega a la sub-ruta.
-                        //    GoRouter es lo bastante listo para
-                        //    saber que es una sub-ruta de /loans.
-                        context.go('/loans/new');
+                        // 2. Navegamos usando el NAVEGADOR RAÍZ
+                        rootNavigatorKey.currentContext?.go('/loans/new');
                       },
                     ),
                     _buildOrbitButton(
@@ -223,14 +201,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       angle: math.pi / 2,
                       icon: Icons.person_add,
                       label: 'Nuevo Cliente',
-                      onPressed: () => _toggleFabMenu(),
+                      onPressed: () => _toggleFabMenu(), // Todavía no hace nada
                     ),
                     _buildOrbitButton(
                       animation: _button3Anim,
                       angle: math.pi / 6,
                       icon: Icons.payment,
                       label: 'Registrar Pago',
-                      onPressed: () => _toggleFabMenu(),
+                      onPressed: () => _toggleFabMenu(), // Todavía no hace nada
                     ),
                   ],
                 );
@@ -242,10 +220,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  // 5. ¡ELIMINADO!
-  //    Ya no necesitamos _buildCurrentPage. GoRouter lo hace por nosotros.
-  // Widget _buildCurrentPage(int index, bool isLoading, User? sessionUser) { ... }
-
   // --- Helper de Nav (sin cambios) ---
   Widget _buildNavButton({
     required BuildContext context,
@@ -255,7 +229,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     required int currentIndex,
     required VoidCallback onPressed,
   }) {
-    // ... (código sin cambios)
     final colorScheme = Theme.of(context).colorScheme;
     final bool isActive = index == currentIndex;
     final color = isActive ? colorScheme.primary : colorScheme.onSurfaceVariant;
@@ -295,7 +268,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     required String label,
     required VoidCallback onPressed,
   }) {
-    // ... (código sin cambios)
     final animValue = animation.value;
     final radius = 120.0 * animValue;
     final offset = Offset(
