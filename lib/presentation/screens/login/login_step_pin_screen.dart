@@ -140,7 +140,7 @@ class _LoginPinScreenState extends ConsumerState<LoginPinScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            const SizedBox(width: 72), // Espacio vacío
+            const SizedBox(width: 72), // Espacio vacíos
             _buildDigitButton('0'),
             _buildIconButton(Icons.backspace, _deleteLast),
           ],
