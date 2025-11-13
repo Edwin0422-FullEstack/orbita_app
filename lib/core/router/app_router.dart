@@ -4,29 +4,40 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:orbita/presentation/providers/session/session_provider.dart';
-// Importamos TODAS las pantallas y vistas
+
+// Bloqueo por PIN
+import 'package:orbita/presentation/providers/app_lock/app_lock_provider.dart';
+import 'package:orbita/presentation/screens/lock/pin_lock_screen.dart';
+
+// Pantallas
 import 'package:orbita/presentation/screens/home/home_screen.dart';
 import 'package:orbita/presentation/screens/home/views/clients_view.dart';
 import 'package:orbita/presentation/screens/home/views/dashboard_view.dart';
 import 'package:orbita/presentation/screens/home/views/loans_view.dart';
 import 'package:orbita/presentation/screens/home/views/reports_view.dart';
+
 import 'package:orbita/presentation/screens/kyc/kyc_document_scan_back_screen.dart';
 import 'package:orbita/presentation/screens/kyc/kyc_document_scan_screen.dart';
 import 'package:orbita/presentation/screens/kyc/kyc_location_screen.dart';
 import 'package:orbita/presentation/screens/kyc/kyc_selfie_screen.dart';
 import 'package:orbita/presentation/screens/kyc/kyc_start_screen.dart';
-import 'package:orbita/presentation/screens/login/login_screen.dart';
+
+
+import 'package:orbita/presentation/screens/login/login_step_pin_screen.dart';
+
 import 'package:orbita/presentation/screens/splash/splash_screen.dart';
 import 'package:orbita/presentation/screens/loans/new_loan_screen.dart';
 
-// La clave pública es ESENCIAL para este caso de uso.
+import '../../presentation/screens/login/login_screen.dart';
+
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   final session = ref.watch(sessionProvider);
+  final isLocked = ref.watch(appLockProvider);
 
   return GoRouter(
-    navigatorKey: rootNavigatorKey, // <-- Usamos la clave pública
+    navigatorKey: rootNavigatorKey,
     initialLocation: '/splash',
     observers: [RouteLogger()],
     debugLogDiagnostics: true,
@@ -36,18 +47,31 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/splash',
         builder: (context, state) => const SplashScreen(),
       ),
+
+      // LOGIN NUEVO
       GoRoute(
         path: '/login',
-        builder: (context, state) => const LoginScreen(),
+        builder: (context, state) => const LoginDocumentScreen(),
       ),
 
-      // --- EL SHELLROUTE ---
+      GoRoute(
+        path: '/login/pin',
+        builder: (context, state) =>
+            LoginPinScreen(extra: state.extra as Map<String, String>),
+      ),
+
+      // Bloqueo por PIN
+      GoRoute(
+        path: '/app-lock',
+        builder: (context, state) => const PinLockScreen(),
+      ),
+
+      // SHELL (navbar)
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return HomeScreen(navigationShell: navigationShell);
         },
         branches: [
-          // Pestaña 0: Inicio
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -56,17 +80,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          // Pestaña 1: Préstamos
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: '/loans',
                 builder: (context, state) => const LoansView(),
-                // ¡YA NO TIENE SUB-RUTAS!
               ),
             ],
           ),
-          // Pestaña 2: Clientes
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -75,7 +96,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          // Pestaña 3: Reportes
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -87,22 +107,17 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ],
       ),
 
-      // --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
-      // La ruta vuelve a ser de NIVEL SUPERIOR (hermana del ShellRoute)
+      // Préstamos
       GoRoute(
         path: '/loans/new',
-        // Asignamos la clave raíz a esta ruta para asegurar
-        // que se muestre por encima del Shell.
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const NewLoanScreen(),
       ),
-      // --- FIN DE LA CORRECCIÓN ---
 
-
-      // --- GRUPO DE RUTAS KYC ---
+      // KYC
       GoRoute(
         path: '/kyc/start',
-        parentNavigatorKey: rootNavigatorKey, // Es buena idea hacer esto para todas las rutas "full screen"
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const KycStartScreen(),
       ),
       GoRoute(
@@ -127,28 +142,40 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
     ],
 
-    // --- FIREWALL ---
+    // 🔥 REDIRECT LOGIC ARREGLADO
     redirect: (context, state) {
       final goingTo = state.matchedLocation;
       final bool isLoggedIn = session != null;
       final bool isVerified = session?.isVerified ?? false;
 
-      if (kDebugMode) {
-        // ignore: avoid_print
-        print('[Router.redirect] to=$goingTo, isLoggedIn=$isLoggedIn, isVerified=$isVerified');
+      // BLOQUEO EN PRIMER PLANO
+      if (isLoggedIn && isLocked) {
+        if (goingTo == '/app-lock') return null;
+        return '/app-lock';
       }
 
-      if (goingTo == '/splash') return null;
-      if (!isLoggedIn) return (goingTo == '/login') ? null : '/login';
+      if (goingTo == '/app-lock' && !isLocked) {
+        return '/dashboard';
+      }
 
+      // ---- LOGIN FLOW NUEVO ----
+      if (!isLoggedIn) {
+        // ❗ PERMITIMOS LOGIN Y PIN
+        if (goingTo == '/login' || goingTo == '/login/pin') return null;
+
+        // ❌ TODO LO DEMÁS redirige a /login
+        return '/login';
+      }
+
+      // ---- KYC ----
       if (!isVerified) {
         if (goingTo.startsWith('/kyc')) return null;
         return '/kyc/start';
       }
 
-      // Si está verificado
+      // Bloqueo para evitar volver al login
       if (goingTo == '/login' || goingTo == '/splash' || goingTo.startsWith('/kyc')) {
-        return '/dashboard'; // Manda a la pestaña de inicio
+        return '/dashboard';
       }
 
       if (goingTo == '/') return '/dashboard';
@@ -158,30 +185,21 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   );
 });
 
-// --- Observer de navegación para depurar ---
+// DEBUG NAVIGATION LOGS
 class RouteLogger extends NavigatorObserver {
   void _log(String msg) {
-    if (kDebugMode) {
-      // ignore: avoid_print
-      print('[Nav] $msg');
-    }
+    if (kDebugMode) print('[Nav] $msg');
   }
 
   @override
   void didPush(Route route, Route? previousRoute) {
-    _log('push: ${route.settings.name ?? route} (from: ${previousRoute?.settings.name ?? previousRoute})');
+    _log('push: ${route.settings.name ?? route}');
     super.didPush(route, previousRoute);
   }
 
   @override
   void didPop(Route route, Route? previousRoute) {
-    _log('pop: ${route.settings.name ?? route} -> ${previousRoute?.settings.name ?? previousRoute}');
+    _log('pop: ${route.settings.name ?? route}');
     super.didPop(route, previousRoute);
-  }
-
-  @override
-  void didReplace({Route? newRoute, Route? oldRoute}) {
-    _log('replace: ${oldRoute?.settings.name ?? oldRoute} -> ${newRoute?.settings.name ?? newRoute}');
-    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
   }
 }

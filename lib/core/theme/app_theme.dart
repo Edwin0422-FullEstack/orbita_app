@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 
-/// 🌌 Tema Fintech Galaxy para Orbita
-/// Inspirado en tonos violeta, azul profundo y lavanda.
-/// Soporta modo claro y oscuro, con gradientes y tipografía moderna.
+/// 🎨 Fintech Galaxy Theme Mejorado
 class AppTheme {
-  // 🎨 Paleta base — del diseño Fintech Premium
-  static const Color _primaryColor = Color(0xFF5B3FFF); // Violeta eléctrico
-  static const Color _secondaryColor = Color(0xFF3B2CFF); // Azul violeta
-  static const Color _surfaceDark = Color(0xFF0B0B1E); // Fondo principal oscuro
-  static const Color _lavender = Color(0xFF8A7CFF); // Textos suaves
-  static const Color _textSecondary = Color(0xFFB0B3D6);
-  static const Color _success = Color(0xFF30E0A1);
-  static const Color _error = Color(0xFFF54B7C);
+  static const Color primaryColor = Color(0xFF5B3FFF);
+  static const Color secondaryColor = Color(0xFF2E4CFF);
+  static const Color accentColor = Color(0xFFFFA726);
+  static const Color successColor = Color(0xFF30E0A1);
+  static const Color errorColor = Color(0xFFF54B7C);
 
-  // 🌈 Gradientes principales
+  static const Color surfaceDark = Color(0xFF0A0A1F);
+  static const Color surfaceLight = Color(0xFFF5F7FB);
+
+  static const Color textPrimaryDark = Color(0xFFEDEDED);
+  static const Color textSecondaryDark = Color(0xFF9BA2B8);
+  static const Color textPrimaryLight = Color(0xFF1E1E28);
+  static const Color textSecondaryLight = Color(0xFF6E6E7A);
+
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [_primaryColor, _secondaryColor],
+    colors: [primaryColor, secondaryColor],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -26,33 +28,32 @@ class AppTheme {
     end: Alignment.bottomCenter,
   );
 
-  // 🕶️ Tema Oscuro
   static final ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: _surfaceDark,
+    scaffoldBackgroundColor: surfaceDark,
     colorScheme: const ColorScheme.dark(
-      primary: _primaryColor,
-      secondary: _secondaryColor,
-      surface: Color(0xFF1E0F5F),
+      primary: primaryColor,
+      secondary: secondaryColor,
+      surface: Color(0xFF1A1B33),
       onPrimary: Colors.white,
       onSecondary: Colors.white,
-      onSurface: _textSecondary,
-      error: _error,
+      onSurface: textPrimaryDark,
+      error: errorColor,
     ),
     textTheme: const TextTheme(
       headlineLarge: TextStyle(
         fontSize: 28,
         fontWeight: FontWeight.bold,
-        color: Colors.white,
+        color: textPrimaryDark,
       ),
       bodyLarge: TextStyle(
         fontSize: 16,
-        color: Colors.white,
+        color: textPrimaryDark,
       ),
       bodyMedium: TextStyle(
         fontSize: 14,
-        color: _textSecondary,
+        color: textSecondaryDark,
       ),
       labelLarge: TextStyle(
         fontWeight: FontWeight.w600,
@@ -60,69 +61,69 @@ class AppTheme {
       ),
     ),
     cardTheme: CardThemeData(
-      color: const Color(0xFF151740).withOpacity(0.9),
-      shadowColor: _primaryColor.withOpacity(0.4),
+      color: const Color(0xFF1F203C),
+      shadowColor: primaryColor.withAlpha(102), // reemplazo de withOpacity(0.4)
       elevation: 8,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
+
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,
       foregroundColor: Colors.white,
     ),
-    iconTheme: const IconThemeData(color: _lavender, size: 22),
+    iconTheme: const IconThemeData(color: accentColor, size: 22),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: _primaryColor,
+      backgroundColor: accentColor,
       foregroundColor: Colors.white,
     ),
   );
 
-  // ☀️ Tema Claro (para dashboards o administración)
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
-    scaffoldBackgroundColor: const Color(0xFFF7F7FB),
+    scaffoldBackgroundColor: surfaceLight,
     colorScheme: const ColorScheme.light(
-      primary: _primaryColor,
-      secondary: _secondaryColor,
+      primary: primaryColor,
+      secondary: secondaryColor,
       surface: Colors.white,
       onPrimary: Colors.white,
-      onSurface: Colors.black87,
-      error: _error,
+      onSurface: textPrimaryLight,
+      error: errorColor,
     ),
     textTheme: const TextTheme(
       headlineLarge: TextStyle(
         fontSize: 28,
         fontWeight: FontWeight.bold,
-        color: Colors.black87,
+        color: textPrimaryLight,
       ),
       bodyLarge: TextStyle(
         fontSize: 16,
-        color: Colors.black87,
+        color: textPrimaryLight,
       ),
       bodyMedium: TextStyle(
         fontSize: 14,
-        color: Colors.black54,
+        color: textSecondaryLight,
       ),
       labelLarge: TextStyle(
         fontWeight: FontWeight.w600,
-        color: _primaryColor,
+        color: primaryColor,
       ),
     ),
     cardTheme: CardThemeData(
       color: Colors.white,
-      shadowColor: _secondaryColor.withOpacity(0.2),
+      shadowColor: secondaryColor.withAlpha(51), // reemplazo de withOpacity(0.2)
       elevation: 6,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      foregroundColor: Colors.black,
+      foregroundColor: textPrimaryLight,
     ),
-    iconTheme: const IconThemeData(color: _primaryColor, size: 22),
+    iconTheme: const IconThemeData(color: primaryColor, size: 22),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: _primaryColor,
+      backgroundColor: primaryColor,
       foregroundColor: Colors.white,
     ),
   );

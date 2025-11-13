@@ -1,7 +1,8 @@
 // lib/presentation/providers/login/login_controller.dart
 import 'package:orbita/core/providers/repository_providers.dart';
-// 1. IMPORTAR EL NUEVO PROVIDER DE SESIÓN
 import 'package:orbita/presentation/providers/session/session_provider.dart';
+// 1. 👇 IMPORTAR EL LOCK PROVIDER
+import 'package:orbita/presentation/providers/app_lock/app_lock_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'login_controller.g.dart';
@@ -19,14 +20,15 @@ class LoginController extends _$LoginController {
 
     try {
       final authRepository = ref.read(authRepositoryProvider);
-
-      // 2. ¡EL CAMBIO CLAVE! Capturamos el 'User'
       final user = await authRepository.login(email, password);
 
-      // 3. ¡ALIMENTAMOS LA SESIÓN GLOBAL!
+      // Actualizamos la sesión
       ref.read(sessionProvider.notifier).setUser(user);
 
-      // Éxito
+      // 2. 👇 ¡AQUÍ ESTÁ LA MAGIA!
+      // Al hacer login manual, desbloqueamos la app automáticamente.
+      ref.read(appLockProvider.notifier).unlock();
+
       state = const AsyncValue.data(null);
     } catch (e, s) {
       state = AsyncValue.error(e, s);

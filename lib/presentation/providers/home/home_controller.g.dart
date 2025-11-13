@@ -41,7 +41,7 @@ final class HomeControllerProvider
   }
 }
 
-String _$homeControllerHash() => r'deb1a9845890a4fc6578fd436cb29328b234b298';
+String _$homeControllerHash() => r'4b7aeee9c104fe63328957163f1bd5e22d4b0dc1';
 
 abstract class _$HomeController extends $Notifier<AsyncValue<void>> {
   AsyncValue<void> build();
