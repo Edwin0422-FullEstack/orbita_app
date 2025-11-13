@@ -1,14 +1,23 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // 👈 necesario para controlar UI del sistema
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart'; // ✅ soporte regional
 import 'package:orbita/core/router/app_router.dart';
 import 'package:orbita/core/theme/app_theme.dart';
 
-void main() {
-  // (Aquí irán inicializaciones futuras como Firebase, etc.)
-  
+Future<void> main() async {
+  // 🧩 Inicialización base de Flutter
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 🌎 Inicializa formato de fechas regional (es_CO)
+  await initializeDateFormatting('es_CO', null);
+
+  // 🚫 Oculta barras de navegación y estado (modo inmersivo)
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+  // 🧠 Inicia Riverpod + App
   runApp(
-    // 1. Inicializamos Riverpod
     const ProviderScope(
       child: MainApp(),
     ),
@@ -20,21 +29,19 @@ class MainApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    
-    // 2. Observamos el provider del router
+    // 1️⃣ Observa el router global
     final router = ref.watch(goRouterProvider);
 
+    // 2️⃣ Construye la app con Material 3 + rutas
     return MaterialApp.router(
-      // 3. Conectamos GoRouter
       routerConfig: router,
-      
-      // 4. Conectamos nuestros Temas M3
+      debugShowCheckedModeBanner: false,
+      title: 'Orbita Finanzas',
+
+      // 🌙 Soporte de tema claro/oscuro
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system, // O un provider para cambiarlo
-
-      debugShowCheckedModeBanner: false,
-      title: 'Orbita',
+      themeMode: ThemeMode.system,
     );
   }
 }

@@ -1,7 +1,7 @@
-// lib/presentation/screens/home/views/loans_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:orbita/core/router/app_router.dart';
 import 'package:orbita/presentation/providers/session/session_provider.dart';
 
 class LoansView extends ConsumerWidget {
@@ -12,14 +12,12 @@ class LoansView extends ConsumerWidget {
     final sessionUser = ref.watch(sessionProvider);
     final isVerified = sessionUser?.isVerified ?? false;
 
-    // Usamos un AnimatedSwitcher para una transición suave
+    // Usamos AnimatedSwitcher para transición suave entre vistas
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 500),
       child: isVerified
-      // ---- VISTA SI ESTÁ VERIFICADO ----
-          ? _VerifiedLoanView(key: const ValueKey('verified'))
-      // ---- VISTA SI NO ESTÁ VERIFICADO ----
-          : _UnverifiedLoanView(key: const ValueKey('unverified')),
+          ? const _VerifiedLoanView(key: ValueKey('verified'))
+          : const _UnverifiedLoanView(key: ValueKey('unverified')),
     );
   }
 }
@@ -31,17 +29,14 @@ class _UnverifiedLoanView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.lock_outline,
-              size: 80,
-              color: colorScheme.error,
-            ),
+            Icon(Icons.lock_outline, size: 80, color: colorScheme.error),
             const SizedBox(height: 24),
             const Text(
               'Cupo Bloqueado',
@@ -61,11 +56,8 @@ class _UnverifiedLoanView extends StatelessWidget {
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               ),
-              onPressed: () {
-                // El firewall nos atrapará, pero esto es más explícito
-                context.go('/kyc/start');
-              },
-            )
+              onPressed: () => context.go('/kyc/start'),
+            ),
           ],
         ),
       ),
@@ -81,8 +73,7 @@ class _VerifiedLoanView extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    // (Este sería nuestro "ranking" o cupo mockeado)
-    const String loanCupo = "\$500.000";
+    const String loanCupo = "\$50.000"; // ejemplo de cupo
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -96,32 +87,45 @@ class _VerifiedLoanView extends StatelessWidget {
             style: TextStyle(fontSize: 18, color: Colors.grey),
           ),
           const SizedBox(height: 8),
-          // El "Ranking" o Cupo
+
+          // 💰 Cupo visual
           Text(
             loanCupo,
             textAlign: TextAlign.center,
             style: textTheme.displayLarge?.copyWith(
-              color: colorScheme.primary, // Verde esmeralda
+              color: colorScheme.primary,
               fontWeight: FontWeight.bold,
             ),
           ),
+
           const SizedBox(height: 8),
           const Text(
-            'Ranking: Orbita Plata', // Ranking
+            'Ranking: Orbita Bronce',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
+
           const SizedBox(height: 48),
-          // El botón de Solicitar
-          FilledButton(
+
+          // 🚀 Botón principal — Solicitar préstamo
+          FilledButton.icon(
+            icon: const Icon(Icons.post_add),
+            label: const Text('Solicitar Préstamo'),
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 20),
-              textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              textStyle: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             onPressed: () {
-              // TODO: Navegar al flujo de solicitud
+              // Navegación segura usando rootNavigatorKey
+              final ctx = rootNavigatorKey.currentContext ?? context;
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Navegando a /loans/new')),
+              );
+              GoRouter.of(ctx).go('/loans/new');
             },
-            child: const Text('Solicitar Préstamo'),
           ),
         ],
       ),

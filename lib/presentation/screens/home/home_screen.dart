@@ -1,4 +1,3 @@
-// lib/presentation/screens/home/home_screen.dart
 import 'dart:ui';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -6,19 +5,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:orbita/presentation/providers/home/home_controller.dart';
-// 1. IMPORTAMOS NUESTRO ROUTER (para la clave global)
+import 'package:orbita/presentation/providers/session/session_provider.dart';
 import 'package:orbita/core/router/app_router.dart';
 
-// Provider de estado del menú (sin cambios)
-final _isFabMenuOpenProvider = StateProvider.autoDispose<bool>((_) => false);
+final _isMenuVisibleProvider = StateProvider.autoDispose<bool>((_) => false);
 
 class HomeScreen extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;
 
-  const HomeScreen({
-    super.key,
-    required this.navigationShell,
-  });
+  const HomeScreen({super.key, required this.navigationShell});
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
@@ -26,280 +21,184 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with SingleTickerProviderStateMixin {
-
-  late AnimationController _animationController;
-  late Animation<double> _rotationAnimation;
-  late Animation<double> _button1Anim;
-  late Animation<double> _button2Anim;
-  late Animation<double> _button3Anim;
+  AnimationController? _controller;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
+    _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    _rotationAnimation = Tween<double>(begin: 0.0, end: 0.375).animate(
-        CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
-    _button1Anim = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.0, 0.7, curve: Curves.easeOutCubic),
-    ));
-    _button2Anim = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.15, 0.85, curve: Curves.easeOutCubic),
-    ));
-    _button3Anim = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.3, 1.0, curve: Curves.easeOutCubic),
-    ));
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
-  void _toggleFabMenu() {
-    final isMenuOpen = ref.read(_isFabMenuOpenProvider);
-    if (isMenuOpen) {
-      _animationController.reverse();
+  void _toggleMenu() {
+    final notifier = ref.read(_isMenuVisibleProvider.notifier);
+    final isOpen = ref.read(_isMenuVisibleProvider);
+    if (isOpen) {
+      _controller?.reverse();
     } else {
-      _animationController.forward();
+      _controller?.forward();
     }
-    ref.read(_isFabMenuOpenProvider.notifier).state = !isMenuOpen;
+    notifier.state = !isOpen;
   }
-
-  // --- FIN LÓGICA DE ANIMACIÓN ---
 
   @override
   Widget build(BuildContext context) {
-    // Lógica de Logout
+    final controller = _controller;
+    if (controller == null) return const SizedBox.shrink();
+
     final homeState = ref.watch(homeControllerProvider);
     final isLoading = homeState.isLoading;
-    ref.listen(homeControllerProvider, (previous, next) {
-      if (next is AsyncData<void> && !(next.isLoading)) {
-        ref.read(_isFabMenuOpenProvider.notifier).state = false;
-        context.go('/login');
-      }
-      if (next is AsyncError) { /* ... (manejo de error) */ }
-    });
-
-    final isFabMenuOpen = ref.watch(_isFabMenuOpenProvider);
     final colorScheme = Theme.of(context).colorScheme;
-    final currentPageIndex = widget.navigationShell.currentIndex;
+    final currentIndex = widget.navigationShell.currentIndex;
+    final isMenuVisible = ref.watch(_isMenuVisibleProvider);
 
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
         title: const Text('Orbita'),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
             tooltip: 'Cerrar Sesión',
-            onPressed: isLoading ? null : () {
-              ref.read(homeControllerProvider.notifier).logout();
-            },
+            onPressed: isLoading
+                ? null
+                : () => ref.read(homeControllerProvider.notifier).logout(),
           ),
         ],
       ),
+      body: widget.navigationShell,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        onPressed: _toggleFabMenu,
-        child: RotationTransition(
-          turns: _rotationAnimation,
-          child: Icon(isFabMenuOpen ? Icons.close : Icons.add),
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 8.0,
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.8),
-        clipBehavior: Clip.antiAlias,
-        child: SizedBox(
-          height: 60.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildNavButton(
-                context: context,
-                icon: Icons.dashboard,
-                label: 'Inicio',
-                index: 0,
-                currentIndex: currentPageIndex,
-                onPressed: () => widget.navigationShell.goBranch(0),
-              ),
-              _buildNavButton(
-                context: context,
-                icon: Icons.monetization_on,
-                label: 'Préstamos',
-                index: 1,
-                currentIndex: currentPageIndex,
-                onPressed: () => widget.navigationShell.goBranch(1),
-              ),
-              const SizedBox(width: 48),
-              _buildNavButton(
-                context: context,
-                icon: Icons.people,
-                label: 'Clientes',
-                index: 2,
-                currentIndex: currentPageIndex,
-                onPressed: () => widget.navigationShell.goBranch(2),
-              ),
-              _buildNavButton(
-                context: context,
-                icon: Icons.bar_chart,
-                label: 'Reportes',
-                index: 3,
-                currentIndex: currentPageIndex,
-                onPressed: () => widget.navigationShell.goBranch(3),
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: Stack(
-        children: [
-          // El 'body' es simplemente el 'navigationShell'
-          widget.navigationShell,
 
-          // CAPA 2: Desenfoque
-          if (isFabMenuOpen)
-            GestureDetector(
-              onTap: _toggleFabMenu,
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-                child: Container(color: Colors.black.withValues(alpha: 0.3)),
-              ),
-            ),
+      // ✨ FAB animado (diamante)
+      floatingActionButton: AnimatedBuilder(
+        animation: controller,
+        builder: (context, _) {
+          final t = controller.value;
+          final rotation = math.pi / 4 * t;
+          final borderRadius = BorderRadius.circular(24 - 16 * t);
 
-          // CAPA 3: Órbita
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 80,
-            child: AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                return Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: [
-                    _buildOrbitButton(
-                      animation: _button1Anim,
-                      angle: math.pi * 5 / 6,
-                      icon: Icons.post_add,
-                      label: 'Nuevo Préstamo',
-                      // --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
-                      onPressed: () {
-                        _toggleFabMenu();
-                        // 2. Navegamos usando el NAVEGADOR RAÍZ
-                        rootNavigatorKey.currentContext?.go('/loans/new');
-                      },
-                    ),
-                    _buildOrbitButton(
-                      animation: _button2Anim,
-                      angle: math.pi / 2,
-                      icon: Icons.person_add,
-                      label: 'Nuevo Cliente',
-                      onPressed: () => _toggleFabMenu(), // Todavía no hace nada
-                    ),
-                    _buildOrbitButton(
-                      animation: _button3Anim,
-                      angle: math.pi / 6,
-                      icon: Icons.payment,
-                      label: 'Registrar Pago',
-                      onPressed: () => _toggleFabMenu(), // Todavía no hace nada
+          return Transform.rotate(
+            angle: rotation,
+            child: GestureDetector(
+              onTap: _toggleMenu,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 400),
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: colorScheme.primary,
+                  borderRadius: borderRadius,
+                  boxShadow: [
+                    BoxShadow(
+                      color: colorScheme.primary.withOpacity(0.4),
+                      blurRadius: isMenuVisible ? 20 : 10,
+                      spreadRadius: isMenuVisible ? 2 : 0,
                     ),
                   ],
-                );
-              },
+                ),
+                child: Icon(
+                  isMenuVisible ? Icons.close_rounded : Icons.menu_rounded,
+                  color: Colors.white,
+                  size: 28,
+                ),
+              ),
             ),
-          ),
-        ],
+          );
+        },
+      ),
+
+      // ✨ Menú inferior oculto → aparece con animación
+      bottomNavigationBar: AnimatedBuilder(
+        animation: controller,
+        builder: (context, _) {
+          final slide = 1 - controller.value;
+          final opacity = controller.value;
+
+          return Transform.translate(
+            offset: Offset(0, 100 * slide),
+            child: Opacity(
+              opacity: opacity,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest.withOpacity(0.95),
+                  borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(28)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.15),
+                      blurRadius: 12,
+                      offset: const Offset(0, -3),
+                    ),
+                  ],
+                ),
+                child: _buildBottomNav(context, colorScheme, currentIndex),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
-  // --- Helper de Nav (sin cambios) ---
-  Widget _buildNavButton({
-    required BuildContext context,
-    required IconData icon,
-    required String label,
-    required int index,
-    required int currentIndex,
-    required VoidCallback onPressed,
-  }) {
+  // --- 🧭 Menú inferior para cliente ---
+  Widget _buildBottomNav(
+      BuildContext context, ColorScheme colorScheme, int currentIndex) {
+    return SafeArea(
+      top: false,
+      child: SizedBox(
+        height: 72,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _navButton(context, Icons.home_rounded, 'Inicio', 0, currentIndex),
+            _navButton(context, Icons.attach_money_rounded, 'Mis Préstamos', 1, currentIndex),
+            const SizedBox(width: 56),
+            _navButton(context, Icons.star_rounded, 'Ranking', 2, currentIndex),
+            _navButton(context, Icons.settings_rounded, 'Ajustes', 3, currentIndex),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _navButton(
+      BuildContext context, IconData icon, String label, int index, int currentIndex) {
+    final isActive = index == currentIndex;
     final colorScheme = Theme.of(context).colorScheme;
-    final bool isActive = index == currentIndex;
     final color = isActive ? colorScheme.primary : colorScheme.onSurfaceVariant;
+
     return Expanded(
       child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(20),
+        onTap: () => widget.navigationShell.goBranch(index),
+        borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, color: color),
-              const SizedBox(height: 2),
+              Icon(icon, color: color, size: 26),
+              const SizedBox(height: 4),
               AnimatedOpacity(
-                opacity: isActive ? 1.0 : 0.0,
+                opacity: isActive ? 1.0 : 0.6,
                 duration: const Duration(milliseconds: 200),
                 child: Text(
                   label,
-                  style: TextStyle(color: color, fontSize: 12),
-                  maxLines: 1,
-                  overflow: TextOverflow.clip,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // --- Helper de Órbita (sin cambios) ---
-  Widget _buildOrbitButton({
-    required Animation<double> animation,
-    required double angle,
-    required IconData icon,
-    required String label,
-    required VoidCallback onPressed,
-  }) {
-    final animValue = animation.value;
-    final radius = 120.0 * animValue;
-    final offset = Offset(
-      math.cos(angle) * radius,
-      -math.sin(angle) * radius,
-    );
-    return Opacity(
-      opacity: animValue,
-      child: Transform.scale(
-        scale: animValue,
-        child: Transform.translate(
-          offset: offset,
-          child: Column(
-            children: [
-              FloatingActionButton.small(
-                onPressed: onPressed,
-                child: Icon(icon),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  label,
                   style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    color: color,
+                    fontSize: 12,
+                    fontWeight:
+                    isActive ? FontWeight.bold : FontWeight.normal,
+                  ),
                 ),
-              )
+              ),
             ],
           ),
         ),
