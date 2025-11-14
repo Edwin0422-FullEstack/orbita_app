@@ -11,10 +11,8 @@ import 'package:orbita/presentation/screens/lock/pin_lock_screen.dart';
 
 // Pantallas
 import 'package:orbita/presentation/screens/home/home_screen.dart';
-import 'package:orbita/presentation/screens/home/views/clients_view.dart';
-import 'package:orbita/presentation/screens/home/views/dashboard_view.dart';
+import 'package:orbita/presentation/screens/home/views/clients_view.dart';// Importa la vista correcta
 import 'package:orbita/presentation/screens/home/views/loans_view.dart';
-import 'package:orbita/presentation/screens/home/views/reports_view.dart';
 
 import 'package:orbita/presentation/screens/kyc/kyc_document_scan_back_screen.dart';
 import 'package:orbita/presentation/screens/kyc/kyc_document_scan_screen.dart';
@@ -28,7 +26,12 @@ import 'package:orbita/presentation/screens/login/login_step_pin_screen.dart';
 import 'package:orbita/presentation/screens/splash/splash_screen.dart';
 import 'package:orbita/presentation/screens/loans/new_loan_screen.dart';
 
+// import '../../presentation/screens/login/login_screen.dart'; // Asumo que es 'LoginDocumentScreen'
+import '../../presentation/screens/home/views/dashboard_view.dart';
+import '../../presentation/screens/home/views/reports_view.dart';
 import '../../presentation/screens/login/login_screen.dart';
+import '../../presentation/screens/profile/profile_ranking_screen.dart'; // Importa la vista correcta
+
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -76,7 +79,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/dashboard',
-                builder: (context, state) => const DashboardView(),
+                builder: (context, state) => const HomeMainView(),
               ),
             ],
           ),
@@ -99,8 +102,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/reports',
-                builder: (context, state) => const ReportsView(),
+                path: '/reports', // Dejamos la ruta como '/reports'
+                builder: (context, state) => const HelpCenterView(), // Pero muestra la vista correcta
               ),
             ],
           ),
@@ -140,6 +143,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const KycLocationScreen(),
       ),
+      GoRoute(
+        path: '/profile/ranking',
+        parentNavigatorKey: rootNavigatorKey, // Para que se muestre full-screen
+        builder: (context, state) => const ProfileRankingScreen(),
+      ),
     ],
 
     // 🔥 REDIRECT LOGIC ARREGLADO
@@ -147,6 +155,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       final goingTo = state.matchedLocation;
       final bool isLoggedIn = session != null;
       final bool isVerified = session?.isVerified ?? false;
+
+      // 👇 ¡AQUÍ ESTÁ LA CORRECCIÓN! 👇
+      // Si estamos en el splash, NO HAGAS NADA.
+      // Deja que el SplashScreen decida a dónde ir.
+      if (goingTo == '/splash') {
+        return null;
+      }
 
       // BLOQUEO EN PRIMER PLANO
       if (isLoggedIn && isLocked) {
@@ -174,7 +189,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       }
 
       // Bloqueo para evitar volver al login
-      if (goingTo == '/login' || goingTo == '/splash' || goingTo.startsWith('/kyc')) {
+      if (goingTo == '/login' || goingTo == '/login/pin' || goingTo.startsWith('/kyc')) {
         return '/dashboard';
       }
 

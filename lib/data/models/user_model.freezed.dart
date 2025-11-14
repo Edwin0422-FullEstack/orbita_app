@@ -15,8 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
-@JsonKey(name: '_id') String get id; String get email;@JsonKey(name: 'full_name') String get fullName;@JsonKey(name: 'access_token') String? get token;// ¡AÑADIDO!
- bool get isVerified;
+@JsonKey(name: '_id') String get id; String get email;@JsonKey(name: 'full_name') String get fullName;@JsonKey(name: 'access_token') String? get token; bool get isVerified;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -214,15 +213,14 @@ return $default(_that.id,_that.email,_that.fullName,_that.token,_that.isVerified
 @JsonSerializable()
 
 class _UserModel extends UserModel {
-  const _UserModel({@JsonKey(name: '_id') required this.id, required this.email, @JsonKey(name: 'full_name') required this.fullName, @JsonKey(name: 'access_token') this.token, required this.isVerified}): super._();
+  const _UserModel({@JsonKey(name: '_id') required this.id, required this.email, @JsonKey(name: 'full_name') required this.fullName, @JsonKey(name: 'access_token') this.token, this.isVerified = false}): super._();
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override@JsonKey(name: '_id') final  String id;
 @override final  String email;
 @override@JsonKey(name: 'full_name') final  String fullName;
 @override@JsonKey(name: 'access_token') final  String? token;
-// ¡AÑADIDO!
-@override final  bool isVerified;
+@override@JsonKey() final  bool isVerified;
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.

@@ -11,7 +11,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   email: json['email'] as String,
   fullName: json['full_name'] as String,
   token: json['access_token'] as String?,
-  isVerified: json['isVerified'] as bool,
+  isVerified: json['isVerified'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>

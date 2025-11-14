@@ -28,23 +28,26 @@ class MockAuthDatasourceImpl implements AuthDatasource {
     // Simulamos la demora de red
     await Future.delayed(const Duration(milliseconds: 800));
 
-    // 3. ¡AQUÍ ESTÁ TU LÓGICA QUEMADA!
-    if (email == 'eduin.abello7@gmail.com' && password == '123456') {
+    // 3. ¡LÓGICA QUEMADA ALINEADA CON LA UI!
+    // El parámetro 'email' es el 'número de documento' de la UI.
+    // El parámetro 'password' es el 'PIN' de la UI.
+    if (email == '1007985737' && password == '123456') {
 
       // Guardamos un token falso
       await storage.write(key: _tokenKey, value: 'mock-fake-token-12345');
 
       // Devolvemos el DTO (UserModel) falso
+      // Nota: El email devuelto sí es el email real.
       return const UserModel(
         id: 'mock-user-id',
         email: 'eduin.abello7@gmail.com',
         fullName: 'Edwin Abello (Mock)',
         token: 'mock-fake-token-12345',
-        isVerified: true,
+        isVerified: false, // Asumimos verificado para este mock
       );
     } else {
       // Si falla, lanzamos un error como si fuera la API
-      throw Exception('Credenciales (mock) incorrectas');
+      throw Exception('Documento o PIN (mock) incorrectos');
     }
   }
 

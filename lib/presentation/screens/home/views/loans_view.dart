@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:orbita/core/router/app_router.dart';
+import 'package:intl/intl.dart'; // 👈 AÑADIDO para formatear moneda y fecha
+// import 'package:orbita/core/router/app_router.dart'; // No se usa en esta vista
 import 'package:orbita/presentation/providers/session/session_provider.dart';
 
 class LoansView extends ConsumerWidget {
@@ -12,17 +13,18 @@ class LoansView extends ConsumerWidget {
     final sessionUser = ref.watch(sessionProvider);
     final isVerified = sessionUser?.isVerified ?? false;
 
-    // Usamos AnimatedSwitcher para transición suave entre vistas
+    // Tu lógica de AnimatedSwitcher es perfecta y se mantiene
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 500),
       child: isVerified
-          ? const _VerifiedLoanView(key: ValueKey('verified'))
+          ? const _VerifiedLoanView(key: ValueKey('verified')) // 👈 ESTA ES LA VISTA QUE VAMOS A CAMBIAR
           : const _UnverifiedLoanView(key: ValueKey('unverified')),
     );
   }
 }
 
 // --- WIDGET INTERNO (NO VERIFICADO) ---
+// (Esta vista no se toca, está perfecta)
 class _UnverifiedLoanView extends StatelessWidget {
   const _UnverifiedLoanView({super.key});
 
@@ -65,69 +67,133 @@ class _UnverifiedLoanView extends StatelessWidget {
   }
 }
 
-// --- WIDGET INTERNO (VERIFICADO) ---
+// --- WIDGET INTERNO (VERIFICADO) - ¡REFACTORIZADO! ---
 class _VerifiedLoanView extends StatelessWidget {
   const _VerifiedLoanView({super.key});
 
+  // TODO: Estos datos vendrán de un provider (ej: transactionsProvider)
+  static final _mockTransactions = [
+    {
+      "id": "1",
+      "title": "Abono",
+      "date": DateTime(2024, 11, 30),
+      "amount": 60000.0,
+      "status": "Realizado",
+      "isCredit": true, // Es un abono (entrada)
+    },
+    {
+      "id": "2",
+      "title": "Retiro de dinero",
+      "date": DateTime(2024, 11, 9),
+      "amount": 50000.0,
+      "status": "Realizado",
+      "isCredit": false, // Es un retiro (salida)
+    },
+    {
+      "id": "3",
+      "title": "Abono de cupo",
+      "date": DateTime(2024, 10, 28),
+      "amount": 150000.0,
+      "status": "Realizado",
+      "isCredit": true,
+    }
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    const String loanCupo = "\$50.000"; // ejemplo de cupo
+    final colors = Theme.of(context).colorScheme;
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Text(
-            'Tu Cupo Aprobado',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18, color: Colors.grey),
-          ),
-          const SizedBox(height: 8),
-
-          // 💰 Cupo visual
-          Text(
-            loanCupo,
-            textAlign: TextAlign.center,
-            style: textTheme.displayLarge?.copyWith(
-              color: colorScheme.primary,
+    // Esta vista es ahora un ListView que coincide con la captura de Monet
+    return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+      children: [
+        // 1. Título "Historial" (como en la captura)
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
+          child: Text(
+            'Historial',
+            style: textTheme.displaySmall?.copyWith(
               fontWeight: FontWeight.bold,
+              color: colors.onSurface,
             ),
           ),
+        ),
 
-          const SizedBox(height: 8),
-          const Text(
-            'Ranking: Orbita Bronce',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16, color: Colors.grey),
+        // 2. Subtítulo "Últimos movimientos"
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0, bottom: 16.0),
+          child: Text(
+            'Últimos movimientos',
+            style: textTheme.titleMedium?.copyWith(color: colors.onSurfaceVariant),
           ),
+        ),
 
-          const SizedBox(height: 48),
+        // 3. Lista de tarjetas de transacción
+        ..._mockTransactions.map((tx) {
+          return _TransactionCard(transaction: tx);
+        }).toList(),
+      ],
+    );
+  }
+}
 
-          // 🚀 Botón principal — Solicitar préstamo
-          FilledButton.icon(
-            icon: const Icon(Icons.post_add),
-            label: const Text('Solicitar Préstamo'),
-            style: FilledButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              textStyle: const TextStyle(
-                fontSize: 20,
+/// Widget auxiliar para mostrar cada tarjeta de transacción
+class _TransactionCard extends StatelessWidget {
+  final Map<String, dynamic> transaction;
+
+  const _TransactionCard({required this.transaction});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    // Formateadores
+    final currencyFormat = NumberFormat.currency(locale: 'es_CO', symbol: '\$', decimalDigits: 0);
+    final dateFormat = DateFormat('MMMM d, y', 'es_CO');
+
+    // Determina el color del monto
+    final amountColor = transaction['isCredit'] as bool
+        ? Colors.green.shade400 // Abono (Verde)
+        : colors.onSurface; // Retiro (Color normal)
+
+    return Card(
+      elevation: 0,
+      margin: const EdgeInsets.only(bottom: 12.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: colors.surfaceContainerHighest, // Color de tarjeta sutil
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        // Título (Abono, Retiro)
+        title: Text(
+          transaction['title'] as String,
+          style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        // Subtítulo (Fecha)
+        subtitle: Text(
+          dateFormat.format(transaction['date'] as DateTime),
+          style: textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),
+        ),
+        // Trailing (Monto y Estado)
+        trailing: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              currencyFormat.format(transaction['amount']),
+              style: textTheme.bodyLarge?.copyWith(
+                color: amountColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            onPressed: () {
-              // Navegación segura usando rootNavigatorKey
-              final ctx = rootNavigatorKey.currentContext ?? context;
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Navegando a /loans/new')),
-              );
-              GoRouter.of(ctx).go('/loans/new');
-            },
-          ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              transaction['status'] as String,
+              style: textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),
+            ),
+          ],
+        ),
       ),
     );
   }

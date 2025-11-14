@@ -1,7 +1,9 @@
 // lib/domain/entities/user.dart
+// ignore_for_file: invalid_annotation_target
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'user.freezed.dart'; // ¡Dará error hasta que corras el generador!
+part 'user.freezed.dart';
 
 @freezed
 abstract class User with _$User {
@@ -10,6 +12,6 @@ abstract class User with _$User {
     required String email,
     required String fullName,
     String? token,
-    required bool isVerified, // <-- AÑADIR ESTA LÍNEA
+    required bool isVerified,
   }) = _User;
 }

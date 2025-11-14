@@ -4,7 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:orbita/domain/enums/auth_status.dart';
 import 'package:orbita/presentation/providers/splash/splash_controller.dart';
-import '../../../core/theme/app_theme.dart';
+// import '../../../core/theme/app_theme.dart'; // Ya no se usa para el gradiente
 
 class SplashScreen extends ConsumerWidget {
   const SplashScreen({super.key});
@@ -30,35 +30,35 @@ class SplashScreen extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppTheme.primaryGradient,
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SpinKitFoldingCube(
-                color: Colors.white,
-                size: 60,
+      // 👈 CORRECCIÓN: Se quitó el Container con el gradiente.
+      // El Scaffold ahora usará el 'scaffoldBackgroundColor' del AppTheme.
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SpinKitFoldingCube(
+              // 👈 CORRECCIÓN: Color ajustado al tema
+              color: theme.colorScheme.primary,
+              size: 60,
+            ),
+            const SizedBox(height: 30),
+            Text(
+              'Iniciando Orbita...',
+              style: theme.textTheme.headlineLarge?.copyWith(
+                // 👈 CORRECCIÓN: Color ajustado al tema
+                color: theme.colorScheme.onSurface,
+                fontWeight: FontWeight.w600,
               ),
-              const SizedBox(height: 30),
-              Text(
-                'Iniciando Orbita...',
-                style: theme.textTheme.headlineLarge?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Cargando sistema, por favor espera...',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                // 👈 CORRECCIÓN: Color ajustado al tema
+                color: theme.colorScheme.onSurfaceVariant,
               ),
-              const SizedBox(height: 10),
-              Text(
-                'Cargando sistema, por favor espera...',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.white70,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
